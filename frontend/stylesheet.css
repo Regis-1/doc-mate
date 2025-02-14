@@ -1,0 +1,19 @@
+.result {
+    display: block;
+}
+
+#search_controls {
+    width: 500px;
+}
+
+#search_field {
+    min-width: 70%;
+}
+
+#search_button {
+    min-width: 20%;
+}
+
+#search_results {
+    margin-top: 20px;
+}

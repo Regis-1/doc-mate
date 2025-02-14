@@ -5,19 +5,26 @@
 #include <string>
 #include <iostream>
 #include <thread>
+#include <sstream>
 
 const int SERVER_PORT = 8089;
 const int NUM_OF_CONNECTIONS = 5;
 const std::string INTERFACE_IP = "127.0.0.1";
 
-void handleClient(int clientSocket) {
-  std::string response =
-    "HTTP/1.1 200 OK\r\n"
-    "Content-Type: text/html\r\n"
-    "Content-Length: 13\r\n"
-    "\r\n"
-    "Hello, world!";
+const std::string resHeadersOk = "HTTP/1.1 200 OK\r\n"
+  "Content-Type: application/octet-stream\r\n"
+  "Access-Control-Allow-Origin: *\r\n";
+const std::string resTestBody = R"(../openGl2_0/test13.txt|../openGL3_1/TextureHandler.txt|../README.txt)";
 
+const std::string formatHttpRes(const std::string &body) {
+  std::ostringstream oss;
+  oss << resHeadersOk << "Content-Length: " << body.size() << "\r\n\r\n" << body;
+
+  return oss.str();
+}
+
+void handleClient(int clientSocket) {
+  std::string response {formatHttpRes(resTestBody)};
   write(clientSocket, response.c_str(), response.size());
 
   close(clientSocket);
@@ -25,9 +32,7 @@ void handleClient(int clientSocket) {
 
 int main()
 {
-  int serverSocket = 0;
-  int clientSocket = 0;
-  serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+  int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 
   struct sockaddr_in serverAddr;
   serverAddr.sin_family = AF_INET;
@@ -37,8 +42,9 @@ int main()
   bind(serverSocket, (struct sockaddr*)&serverAddr , sizeof(serverAddr));
   listen(serverSocket, NUM_OF_CONNECTIONS);
 
+  int clientSocket;
   while(true) {
-    std::cout << "\n\nHi, I'm running server. Some client hit me..\n";
+    std::cout << "\nHi, I'm running server. Some client hit me..\n";
     clientSocket = accept(serverSocket, (struct sockaddr*)NULL, NULL);
     std::thread(handleClient, clientSocket).detach();
   }
