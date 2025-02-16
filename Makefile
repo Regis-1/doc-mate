@@ -1,11 +1,15 @@
-all: server
+ROOT_DIR = /home/regis/dev/doc-mate
+SRC_DIR = /home/regis/dev/doc-mate/src
+INC_DIR = /home/regis/dev/doc-mate/include
 
-server: server_main.o
-	g++ -o server server_main.o
+CXX = g++
 
-server_main.o: server_main.cpp
-	g++ -c server_main.cpp
+export ROOT_DIR
+export SRC_DIR
+export INC_DIR
 
-PHONY: clean
-clean:
-	rm server_main.o server
+all: doc_mate
+
+doc_mate:
+	@$(MAKE) -C $(SRC_DIR);
+	@echo "Building finished.";
