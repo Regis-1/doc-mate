@@ -2,7 +2,11 @@ all: main.o server.o
 	@$(CXX) -o $(ROOT_DIR)/doc-mate $^;
 
 main.o: main.cpp
-	@$(CXX) -c $^ -I$(INC_DIR);
+	@$(CXX) $(CXXFLAGS) -c $^;
 
 server.o: server.cpp
-	@$(CXX) -c $^ -I$(INC_DIR);
+	@$(CXX) $(CXXFLAGS) -c $^;
+
+.PHONY: clean
+clean:
+	@rm *.o $(ROOT_DIR)/doc-mate;
